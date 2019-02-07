@@ -72,36 +72,33 @@ $objResult = mysql_fetch_array($objQuery);
 		<div class="col-md-9">
             <div class="profile-content">
 				<div class="alert alert-danger" role="alert">
-					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>	
-					บังคับ
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>บังคับ
+					<a href="insertmain.php"><button type="submit" class="btn btn-warning">Edit</button></a>
 				</div>
 				<?php
-				$strSQL = "SELECT course.name_c,member.Username,main.total FROM course,member,main WHERE course.no_c=main.no_c and main.Username=member.Username";
+				$strSQL = "SELECT course.name_c,main.ucid,main.total FROM course,member,main WHERE course.no_c=main.no_c and main.Username=member.Username";
 				$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 				?>
 				<table class="table table-bordered">
-				<tr>
+					<tr>
 					<th width="20"><i class="glyphicon glyphicon-pencil"></i></th>
 					<th width="60%">รายการ</th>
 					<th>แก้ไข</th>
 					<th>ลบ</th>
 					<th>วันที่เหลือ</th>
-				</tr>
-				<?
-				while($objResult = mysql_fetch_array($objQuery))
-				{	
-					
-				?>
-					<tr>
-						<td><i class="glyphicon glyphicon-pencil"></i></td>
-						<td><?php echo $objResult["name_c"]; ?></td>
-						<td><a href="editmain.php?id=<?php echo $objResult["Username"];?>">Edit</a>
-						<td><?php echo $objResult["Username"]; ?></td>
-						<td><?php echo $objResult["total"]; ?></td>
 					</tr>
-					<?
-				}
-				?>
+					<?php 
+					//while($res = mysql_fetch_array($result)) { // mysql_fetch_array is deprecated, we need to use mysqli_fetch_array 
+					while($objResult = mysql_fetch_array($objQuery)){         
+						echo "<tr>";
+						echo "<td>".'<i class="glyphicon glyphicon-pencil"></i>'."</td>";
+						echo "<td>".$objResult['name_c']."</td>";
+						echo "<td><a href=\"editmain.php?ucid=$objResult[ucid]\">Edit</a></td>";
+						echo "<td><a href=\"delete.php?id=$res[id]\" onClick=\"return confirm('Are you sure you want to delete?')\">Delete</a></td>";
+						echo "<td>".$objResult['total']."</td>";      
+						        
+					}
+					?>
 				</table>
 				<div class="alert alert-info" role="alert">
 					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>	
@@ -191,17 +188,33 @@ function topFunction() {
 </script>
 <script src="js/jquery.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<script>
+// Set the date we're counting down to
+var countDownDate = new Date("Jan 1, 2020").getTime();
 
+// Update the count down every 1 second
+var x = setInterval(function() {
 
-
-<?php
-
-$start= $_POST["startcourse"];
-$end=$_POST["endcourse"];
-
-$date1 = new DateTime($end);
-$date2 = new DateTime($start);
-$total = $date2->diff($date1);
-echo $total->format('%a Day');
-$total=(int) $total->format('%a Day');
-?>
+  // Get todays date and time
+  var now = new Date().getTime();
+    
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+    
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+  // Output the result in an element with id="demo"
+  document.getElementById("demo").innerHTML = days + "d " + hours + "h "
+  + minutes + "m " + seconds + "s ";
+    
+  // If the count down is over, write some text 
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "EXPIRED";
+  }
+}, 1000);
+</script>

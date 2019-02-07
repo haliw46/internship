@@ -8,7 +8,7 @@
 	if(!$objResult)
 	{
 		echo "<script language=\"JavaScript\">";
-		echo "alert('Username and Password Incorrect!');window.location='login.html';";
+		echo "alert('Username and Password Incorrect!');window.location='index.html';";
 		echo "</script>";
 	}
 	else

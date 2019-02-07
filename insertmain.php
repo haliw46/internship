@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 if ($_SESSION['Username'] == "") {
     echo "<script language=\"JavaScript\">";
@@ -70,35 +71,53 @@ $objResult = mysql_fetch_array($objQuery);
 		</div>
 		<div class="col-md-9">
             <div class="profile-content">
-				<div class="alert alert-danger" role="alert">
-					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>	
-					บังคับ
-				</div>
-				<form name="form1" method="post" action="editsave.php">
-					<select name="no_c">
-						<option value="101">php</option>
-						<option value="102">html</option>
-						<option value="103">json</option>
-						<option value="104">python</option>
-						<option value="105">css</option>
-					</select>
-					<table border="0">
-						<tr> 
-							<td>startcourse</td>
-							<td><input type="date" name="startcourse" value="<?php echo $start;?>"></td>
-						</tr>
-						<tr> 
-							<td>endcourse</td>
-							<td><input type="date" name="endcourse" value="<?php echo $end;?>"></td>
-						</tr>
-						<tr>
-							<td><input type="hidden" name="ucid" value=<?php echo $_GET['ucid'];?>></td>
-							<td><input type="submit" name="update" value="Update"></td>
-						</tr>
-					</table>
-				</form>
+            
+			<form action="insertsave.php" name="frmAdd" method="post">
+            <?
+            date_default_timezone_set('asia/bangkok');
+            $start =$_POST['txtstartcourse'];
+            $end= $_POST['txtendcourse'];
+            
+            $currendate=strtotime($start);
+            $timefromdb=strtotime($end);
+            $total=($timefromdb-$currendate)/(60*60*24);
+            ?>
+            <table width="600" border="1">
+                <tr>
+                    <th hidden> <div align="center">ucid </div></th>
+                    <th> <div align="center">Username </div></th>
+                    <th> <div align="center">no_c </div></th>
+                    <th> <div align="center">startcourse </div></th>
+                    <th> <div align="center">endcourse </div></th>
+                    <th hidden> <div align="center">total </div></th>
+                    
+                </tr>
+                <tr>
+                    <td hidden><input type="text" name="txtucid" size="20"></td>
+                    <td><input type="text" name="txtUsername" size="20" value="<?php echo $objResult["Username"]; ?>" readonly></td>
+                    <td>
+                        <select name="txtno_c">
+                            <option value="101">php</option>
+                            <option value="102">html</option>
+                            <option value="103">json</option>
+                            <option value="104">python</option>
+                            <option value="105">css</option>
+                        </select>
+                    </td>
+                    <td><input type="date" name="txtstartcourse" size="20"></td>
+                    <td><input type="date" name="txtendcourse" size="20"></td>
+                    <td hidden><input type="text" name="txttotal" size="20" value="<?echo $total?>"></td>
+
+                </tr>
+            </table>
+                <input type="submit" name="submit" value="submit">
+            </form>
+				
+		
 			</div>
+			
 		</div>
+		
 	</div>
 </div>
 <script>
