@@ -11,7 +11,7 @@ if ($_SESSION['Status'] != "ADMIN") {
 
 }
 include 'connect.php';
-$strSQL = "SELECT * FROM member WHERE Username = '" . $_SESSION['Username'] . "' ";
+$strSQL = "SELECT * FROM user WHERE Username = '" . $_SESSION['Username'] . "' ";
 $objQuery = mysql_query($strSQL);
 $objResult = mysql_fetch_array($objQuery);
 ?>
@@ -73,10 +73,40 @@ $objResult = mysql_fetch_array($objQuery);
             <div class="profile-content">
 				<div class="alert alert-danger" role="alert">
 					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>บังคับ
-					<a href="insertmain.php"><button type="submit" class="btn btn-warning">Edit</button></a>
 				</div>
 				<?php
-				$strSQL = "SELECT course.name_c,main.ucid,main.total FROM course,member,main WHERE course.no_c=main.no_c and main.Username=member.Username";
+				$strSQL = "SELECT course.Course_name,subject_require.Require_id,subject_require.total FROM course,user,subject_require WHERE course.Course_id=subject_require.Course_id and subject_require.Username=user.Username";
+				$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
+				?>
+				<table class="table table-bordered">
+					<tr>
+					<th width="20"><i class="glyphicon glyphicon-pencil"></i></th>
+					<th width="60%">รายการ</th>
+					
+					<th>แก้ไข</th>
+					<th>ลบ</th>
+					<th>วันที่เหลือ</th>
+					</tr>
+					<?php 
+					//while($res = mysql_fetch_array($result)) { // mysql_fetch_array is deprecated, we need to use mysqli_fetch_array 
+					while($objResult = mysql_fetch_array($objQuery)){         
+						echo "<tr>";
+						echo "<td>".'<i class="glyphicon glyphicon-pencil"></i>'."</td>";
+						echo "<td>".$objResult['Course_name']."</td>";
+						echo "<td><a href=\"editmain.php?Require_id=$objResult[Require_id]\">Edit</a></td>";
+						echo "<td><a href=\"delete.php?id=$res[id]\" onClick=\"return confirm('Are you sure you want to delete?')\">Delete</a></td>";
+						echo "<td>".$objResult['total']."</td>";      
+						        
+					}
+					?>
+				</table>
+				<div class="alert alert-info" role="alert">
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>	
+					ลงเอง
+					<!--<a href="insertmain.php"><button type="submit" class="btn btn-warning">เพิ่มข้อมูล</button></a>-->
+				</div>
+				<?php
+				$strSQL = "SELECT course.Course_name,subject_interest.total FROM course,user,subject_interest WHERE course.Course_id=subject_interest.Course_id and subject_interest.Username=user.Username";
 				$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 				?>
 				<table class="table table-bordered">
@@ -92,75 +122,44 @@ $objResult = mysql_fetch_array($objQuery);
 					while($objResult = mysql_fetch_array($objQuery)){         
 						echo "<tr>";
 						echo "<td>".'<i class="glyphicon glyphicon-pencil"></i>'."</td>";
-						echo "<td>".$objResult['name_c']."</td>";
-						echo "<td><a href=\"editmain.php?ucid=$objResult[ucid]\">Edit</a></td>";
+						
+						echo "<td>".$objResult['Course_name']."</td>";
+						echo "<td><a href=\"editmain.php?ucid=$objResult[subject_interest]\">Edit</a></td>";
 						echo "<td><a href=\"delete.php?id=$res[id]\" onClick=\"return confirm('Are you sure you want to delete?')\">Delete</a></td>";
 						echo "<td>".$objResult['total']."</td>";      
 						        
 					}
 					?>
 				</table>
-				<div class="alert alert-info" role="alert">
-					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>	
-					ลงเอง
-				</div>
-				<?php
-				$strSQL = "SELECT course.name_c,other.total FROM course,member,other WHERE course.no_c=other.no_c and other.Username=member.Username";
-				$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
-				?>
-				<table class="table table-bordered">
-				<tr>
-					<th width="20"><i class="glyphicon glyphicon-pencil"></i></th>
-					<th width="60%">รายการ</th>
-					<th>แก้ไข</th>
-					<th>ลบ</th>
-					<th>วันที่เหลือ</th>
-				</tr>
-				<?
-				while($objResult = mysql_fetch_array($objQuery))
-				{
-				?>
-					<tr>
-						<td width="20"><i class="glyphicon glyphicon-pencil"></i></td>
-						<td><?php echo $objResult["name_c"]; ?></td>
-						<td width="20"><button type="submit" class="btn btn-warning">Edit</button></td>
-						<td width="20"><button type="submit" class="btn btn-danger">Delete</button></td>
-						<td><?php echo $objResult["total"]; ?></td>
-					</tr>
-					<?
-				}
-				?>
-				</table>
 				<div class="alert alert-success" role="alert">
 					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>	
 					คนอื่นแนะนำ
 				</div>
 				<?php
-				$strSQL = "SELECT course.name_c,recommend.total FROM course,member,recommend WHERE course.no_c=recommend.no_c and recommend.Username=member.Username";
+				$strSQL = "SELECT course.Course_name,recommend.total FROM course,user,recommend WHERE course.Course_id=recommend.Course_id and recommend.Username=user.Username";
 				$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 				?>
 				<table class="table table-bordered">
-				<tr>
+					<tr>
 					<th width="20"><i class="glyphicon glyphicon-pencil"></i></th>
 					<th width="60%">รายการ</th>
 					<th>แก้ไข</th>
 					<th>ลบ</th>
 					<th>วันที่เหลือ</th>
-				</tr>
-				<?
-				while($objResult = mysql_fetch_array($objQuery))
-				{
-				?>
-					<tr>
-						<td width="20"><i class="glyphicon glyphicon-pencil"></i></td>
-						<td><?php echo $objResult["name_c"]; ?></td>
-						<td width="20"><button type="submit" class="btn btn-warning">Edit</button></td>
-						<td width="20"><button type="submit" class="btn btn-danger">Delete</button></td>
-						<td><?php echo $objResult["total"]; ?></td>
 					</tr>
-					<?
-				}
-				?>
+					<?php 
+					//while($res = mysql_fetch_array($result)) { // mysql_fetch_array is deprecated, we need to use mysqli_fetch_array 
+					while($objResult = mysql_fetch_array($objQuery)){         
+						echo "<tr>";
+						echo "<td>".'<i class="glyphicon glyphicon-pencil"></i>'."</td>";
+						
+						echo "<td>".$objResult['Course_name']."</td>";
+						echo "<td><a href=\"editmain.php?ucid=$objResult[subject_interest]\">Edit</a></td>";
+						echo "<td><a href=\"delete.php?id=$res[id]\" onClick=\"return confirm('Are you sure you want to delete?')\">Delete</a></td>";
+						echo "<td>".$objResult['total']."</td>";      
+						        
+					}
+					?>
 				</table>
 			</div>
 			
